@@ -5,8 +5,11 @@ import {
   Settings, 
   Plus,
   BarChart3,
-  Sparkles
+  Sparkles,
+  LogOut,
+  User
 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
 
 import {
   Sidebar,
@@ -48,6 +51,7 @@ const navigation = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
+  const { user, logout } = useAuth();
   const collapsed = state === "collapsed";
   
   const isActive = (path: string) => {
@@ -119,6 +123,34 @@ export function AppSidebar() {
             </Button>
           </div>
         )}
+
+        {/* User Info and Logout */}
+        <div className="mt-auto p-4 border-t border-border-light">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-primary-foreground" />
+            </div>
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-foreground truncate">
+                  {user?.email}
+                </p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  {user?.role}
+                </p>
+              </div>
+            )}
+          </div>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={logout}
+            className="w-full justify-start text-muted-foreground hover:text-foreground"
+          >
+            <LogOut className="w-4 h-4 mr-2" />
+            {!collapsed && "Logout"}
+          </Button>
+        </div>
       </SidebarContent>
     </Sidebar>
   );
