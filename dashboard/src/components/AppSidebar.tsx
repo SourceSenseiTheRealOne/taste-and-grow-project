@@ -76,9 +76,9 @@ export function AppSidebar() {
           {!collapsed && (
             <div>
               <h2 className="text-lg font-semibold text-foreground">
-                FruitLearn
+                Taste & Grow
               </h2>
-              <p className="text-sm text-muted-foreground">Content Manager</p>
+              <p className="text-sm text-muted-foreground">Content Management</p>
             </div>
           )}
         </div>

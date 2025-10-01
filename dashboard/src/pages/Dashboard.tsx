@@ -62,7 +62,7 @@ export default function Dashboard() {
           />
         </div>
         <div className="relative z-10 max-w-2xl">
-          <h1 className="text-3xl font-bold mb-2">Welcome to FruitLearn Manager</h1>
+          <h1 className="text-3xl font-bold mb-2">Welcome to Taste & Grow Dashboard</h1>
           <p className="text-primary-foreground/90 mb-6">
             Create engaging educational experiences with fruits and vegetables. 
             Manage corridors, design reward cards, and inspire young learners.

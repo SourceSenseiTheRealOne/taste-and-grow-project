@@ -162,7 +162,7 @@ export default function Settings() {
           </div>
           <div>
             <h3 className="text-xl font-semibold text-white">Need Help?</h3>
-            <p className="text-white/80">Get support and learn how to make the most of FruitLearn Manager</p>
+            <p className="text-white/80">Get support and learn how to make the most of Taste & Grow Dashboard</p>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
