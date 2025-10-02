@@ -7,7 +7,8 @@ import {
   BarChart3,
   Sparkles,
   LogOut,
-  User
+  User,
+  Globe
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -35,6 +36,11 @@ const navigation = [
     title: "Corridors",
     url: "/corridors",
     icon: Apple,
+  },
+  {
+    title: "Website",
+    url: "/website",
+    icon: Globe,
   },
   {
     title: "Reward Cards",

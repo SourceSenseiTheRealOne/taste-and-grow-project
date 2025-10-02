@@ -8,6 +8,10 @@ import { Layout } from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Corridors from "./pages/Corridors";
+import CreateCorridor from "./pages/CreateCorridor";
+import EditCorridor from "./pages/EditCorridor";
+import ViewCorridor from "./pages/ViewCorridor";
+import Website from "./pages/Website";
 import Cards from "./pages/Cards";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
@@ -31,6 +35,10 @@ const App = () => (
             }>
               <Route index element={<Dashboard />} />
               <Route path="corridors" element={<Corridors />} />
+              <Route path="corridors/new" element={<CreateCorridor />} />
+              <Route path="corridors/:id/edit" element={<EditCorridor />} />
+              <Route path="corridors/:id" element={<ViewCorridor />} />
+              <Route path="website" element={<Website />} />
               <Route path="cards" element={<Cards />} />
               <Route path="settings" element={<Settings />} />
             </Route>

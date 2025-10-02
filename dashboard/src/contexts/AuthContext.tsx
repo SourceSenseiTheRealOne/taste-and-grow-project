@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 
 interface User {
   id: string;
@@ -18,73 +16,48 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Configure axios defaults
-axios.defaults.baseURL = 'http://localhost:3001';
-axios.defaults.withCredentials = true;
+// Hardcoded admin credentials for development
+const ADMIN_CREDENTIALS = {
+  email: 'admin@kidsgame.com',
+  password: 'admin123'
+};
 
-// Add request interceptor to include token
-axios.interceptors.request.use((config) => {
-  const token = Cookies.get('auth_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Add response interceptor to handle token expiration
-axios.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      Cookies.remove('auth_token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+const ADMIN_USER: User = {
+  id: '1',
+  email: 'admin@kidsgame.com',
+  role: 'admin'
+};
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const isAuthenticated = !!user;
 
+  // Check if user is already logged in (from localStorage)
   useEffect(() => {
-    const token = Cookies.get('auth_token');
-    if (token) {
-      verifyToken();
-    } else {
-      setLoading(false);
+    const savedUser = localStorage.getItem('admin_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
     }
   }, []);
 
-  const verifyToken = async () => {
-    try {
-      const response = await axios.get('/auth/verify');
-      setUser(response.data.user);
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      Cookies.remove('auth_token');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const login = async (email: string, password: string) => {
-    try {
-      const response = await axios.post('/auth/login', { email, password });
-      const { access_token, user: userData } = response.data;
-      
-      Cookies.set('auth_token', access_token, { expires: 1 }); // 1 day
-      setUser(userData);
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Login failed');
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Check against hardcoded credentials
+    if (email === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+      setUser(ADMIN_USER);
+      localStorage.setItem('admin_user', JSON.stringify(ADMIN_USER));
+    } else {
+      throw new Error('Invalid email or password');
     }
   };
 
   const logout = () => {
-    Cookies.remove('auth_token');
     setUser(null);
+    localStorage.removeItem('admin_user');
   };
 
   return (
