@@ -12,6 +12,7 @@ import CreateCorridor from "./pages/CreateCorridor";
 import EditCorridor from "./pages/EditCorridor";
 import ViewCorridor from "./pages/ViewCorridor";
 import Website from "./pages/Website";
+import QuizGenerator from "./pages/QuizGenerator";
 import Cards from "./pages/Cards";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="corridors/:id/edit" element={<EditCorridor />} />
               <Route path="corridors/:id" element={<ViewCorridor />} />
               <Route path="website" element={<Website />} />
+              <Route path="quiz-generator" element={<QuizGenerator />} />
               <Route path="cards" element={<Cards />} />
               <Route path="settings" element={<Settings />} />
             </Route>

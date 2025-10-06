@@ -8,7 +8,8 @@ import {
   Sparkles,
   LogOut,
   User,
-  Globe
+  Globe,
+  Brain
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -41,6 +42,11 @@ const navigation = [
     title: "Website",
     url: "/website",
     icon: Globe,
+  },
+  {
+    title: "Quiz Generator",
+    url: "/quiz-generator",
+    icon: Brain,
   },
   {
     title: "Reward Cards",

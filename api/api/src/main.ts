@@ -8,8 +8,15 @@ async function bootstrap() {
   
   // Enable CORS for dashboard communication
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3001'], // Dashboard URLs
+    origin: [
+      'http://localhost:5173', // Vite default port
+      'http://localhost:3001', // API port
+      'http://localhost:8080', // Dashboard port
+      'http://localhost:3000', // Common React port
+    ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
   
   // Enable validation pipes
