@@ -2,97 +2,253 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Taste & Grow API
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A progressive [Node.js](http://nodejs.org) NestJS API for the Taste & Grow application, powered by **Prisma ORM** and **Supabase PostgreSQL**.
 
-## Description
+## 🚀 Quick Start
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account (free tier available at [supabase.com](https://supabase.com))
 
-## Project setup
+### Installation & Setup (5 minutes)
 
 ```bash
-$ npm install
+# 1. Install dependencies
+npm install
+
+# 2. Update your .env file with Supabase credentials
+# Open .env and replace [YOUR-PASSWORD] with your actual password
+# Get credentials from: Supabase Console → Settings → Database
+
+# 3. Generate Prisma client
+npm run prisma:generate
+
+# 4. Create initial database migration
+npm run prisma:migrate
+# Name it: "init"
+
+# 5. Start development server
+npm run start:dev
 ```
 
-## Compile and run the project
+Your API is now running with Prisma + Supabase! 🎉
+
+## 📋 Project Structure
+
+```
+src/
+├── prisma/
+│   ├── prisma.service.ts    # Database service
+│   └── prisma.module.ts     # NestJS module
+├── auth/                     # Authentication
+├── chatgpt/                  # ChatGPT integration
+├── config/                   # Configuration
+└── entities/                 # Database entities (transitioning to Prisma)
+
+prisma/
+└── schema.prisma             # Database schema definition
+```
+
+## 📚 Database Configuration
+
+This project uses:
+- **ORM**: Prisma
+- **Database**: Supabase PostgreSQL
+- **Connection Pooling**: Enabled via pgbouncer
+
+### Environment Variables
+
+Create a `.env` file based on `.env.example`:
+
+```env
+# Database (Connection pooling for app)
+DATABASE_URL="postgresql://postgres.PROJECT_ID:[PASSWORD]@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Database (Direct connection for migrations)
+DIRECT_URL="postgresql://postgres.PROJECT_ID:[PASSWORD]@aws-1-us-east-1.pooler.supabase.com:5432/postgres"
+
+# JWT Configuration
+JWT_SECRET=your_jwt_secret_key_here
+JWT_EXPIRES_IN=24h
+
+# OpenAI Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_BASE_URL=https://api.openai.com/v1
+
+# Server Configuration
+PORT=3001
+NODE_ENV=development
+```
+
+⚠️ **Important**: `.env` is in `.gitignore` - never commit it! Use `.env.example` as a template for your team.
+
+## 🔧 Available Commands
 
 ```bash
-# development
-$ npm run start
+# Development
+npm run start          # Start server
+npm run start:dev      # Start in watch mode
+npm run start:debug    # Start with debugger
 
-# watch mode
-$ npm run start:dev
+# Build & Production
+npm run build          # Build for production
+npm run start:prod     # Start production build
 
-# production mode
-$ npm run start:prod
+# Database
+npm run prisma:generate   # Generate Prisma client
+npm run prisma:migrate    # Create and apply migrations
+npm run prisma:studio     # Open visual database browser (http://localhost:5555)
+npm run prisma:seed       # Seed database with initial data
+
+# Code Quality
+npm run lint           # Lint and fix code
+npm run format         # Format code with Prettier
+npm run test           # Run unit tests
+npm run test:watch     # Run tests in watch mode
+npm run test:cov       # Test coverage report
+npm run test:e2e       # Run end-to-end tests
 ```
 
-## Run tests
+## 📖 Documentation
+
+- **[QUICKSTART.txt](./QUICKSTART.txt)** - Quick reference guide
+- **[SETUP_INSTRUCTIONS.md](./SETUP_INSTRUCTIONS.md)** - Step-by-step setup guide (5 min)
+- **[PRISMA_SETUP.md](./PRISMA_SETUP.md)** - Detailed Prisma & Supabase guide
+- **[PRISMA_MIGRATION_SUMMARY.md](../PRISMA_MIGRATION_SUMMARY.md)** - Setup completion summary
+
+## 🗄️ Database Schema
+
+Current models:
+
+### User
+```prisma
+model User {
+  id        Int     @id @default(autoincrement())
+  email     String  @unique
+  username  String  @unique
+  password  String
+  role      String  @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+```
+
+Add new models to `prisma/schema.prisma`, then run `npm run prisma:migrate`
+
+## 💡 Using Prisma in Your Code
+
+Example service:
+
+```typescript
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class UserService {
+  constructor(private prisma: PrismaService) {}
+
+  async findAll() {
+    return this.prisma.user.findMany();
+  }
+
+  async findOne(id: number) {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async create(data: any) {
+    return this.prisma.user.create({ data });
+  }
+
+  async update(id: number, data: any) {
+    return this.prisma.user.update({ where: { id }, data });
+  }
+
+  async delete(id: number) {
+    return this.prisma.user.delete({ where: { id } });
+  }
+}
+```
+
+## 🐛 Troubleshooting
+
+**Q: Getting "Can't reach database server"?**
+- Verify your Supabase credentials in `.env`
+- Check that your Supabase project is active
+- Ensure both `DATABASE_URL` and `DIRECT_URL` are set
+
+**Q: Migration fails with "DIRECT_URL not found"?**
+- Make sure `DIRECT_URL` is in `.env` (required for migrations)
+- Verify the URL format is correct
+
+**Q: Prisma client not found?**
+- Run `npm run prisma:generate`
+- Restart your IDE's TypeScript language server
+
+**Q: Build fails with TypeScript errors?**
+- Run `npm run prisma:generate`
+- Check that all Prisma types are generated
+
+## 🔗 External Resources
+
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [Supabase Documentation](https://supabase.com/docs)
+- [NestJS Documentation](https://docs.nestjs.com)
+- [NestJS + Prisma Guide](https://docs.nestjs.com/recipes/prisma)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+
+## 📝 Development Workflow
+
+1. **Create/modify models** → Edit `prisma/schema.prisma`
+2. **Migrate database** → Run `npm run prisma:migrate` (creates migration files)
+3. **Commit migrations** → Add generated migration files to git
+4. **Use in services** → Inject `PrismaService` and use `this.prisma.modelName`
+
+## 🧪 Testing
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
-# e2e tests
-$ npm run test:e2e
+# Watch mode
+npm run test:watch
 
-# test coverage
-$ npm run test:cov
+# Coverage
+npm run test:cov
+
+# E2E tests
+npm run test:e2e
 ```
 
-## Deployment
+## 📦 Tech Stack
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- **Framework**: NestJS v11
+- **ORM**: Prisma v6
+- **Database**: Supabase PostgreSQL
+- **Authentication**: JWT + Passport
+- **AI Integration**: OpenAI API
+- **Language**: TypeScript v5
+- **Testing**: Jest
+- **Code Quality**: ESLint + Prettier
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## ✅ Setup Status
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+- ✅ Prisma ORM configured
+- ✅ Supabase connection ready
+- ✅ NestJS integration complete
+- ✅ Database schema initialized
+- ✅ Development environment ready
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📞 Need Help?
 
-## Resources
+- Check the [documentation files](#-documentation) above
+- Review [Prisma Discord](https://discord.com/invite/prisma)
+- Visit [Supabase Community](https://discord.supabase.com)
+- Check [NestJS Discord](https://discord.gg/G7Qnnhy)
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Last Updated**: October 17, 2025  
+**Framework**: NestJS + Prisma + Supabase PostgreSQL

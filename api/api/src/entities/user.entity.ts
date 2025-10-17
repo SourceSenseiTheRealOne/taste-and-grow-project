@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 
 export enum UserRole {
   ADMIN = 'admin',
+  TEACHER = 'teacher',
   USER = 'user',
 }
 
@@ -12,6 +13,9 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @Column({ nullable: true })
+  username?: string;
 
   @Column()
   password: string;
