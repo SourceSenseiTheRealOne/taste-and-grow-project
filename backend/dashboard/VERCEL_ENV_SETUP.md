@@ -1,6 +1,32 @@
-# Vercel Environment Variable Setup
+# Environment Configuration Guide
 
-After deploying your API, you need to update your Vercel dashboard to use the production API URL.
+## Overview
+
+This dashboard is configured to automatically use the correct API URL based on your environment:
+
+### 🔧 Development (Local)
+- **API URL**: `http://localhost:3000`
+- **Config File**: `.env.development`
+- **Run with**: `npm run dev`
+
+### 🚀 Production (Vercel)
+- **API URL**: `https://taste-and-grow-project-1.onrender.com`
+- **Config File**: `.env.production`
+- **Built with**: `npm run build` or automatic Vercel deployment
+
+## How It Works
+
+Vite automatically loads the correct environment file:
+- Local development → uses `.env.development`
+- Production build → uses `.env.production`
+
+**No manual configuration needed!** ✅
+
+---
+
+## Optional: Override API URL in Vercel
+
+If you want to use a different API URL in production:
 
 ## Step 1: Get Your API URL
 

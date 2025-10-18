@@ -14,7 +14,10 @@ migrate_working_dir/
 
 .vscode/
 
-assets/
+# Flutter game assets are ignored (use game/assets/ for the actual assets)
+game/assets/
+# But allow dashboard assets
+!backend/dashboard/src/assets/
 
 # IntelliJ related
 *.iml
