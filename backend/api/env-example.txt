@@ -1,0 +1,6 @@
+
+# Connect to Supabase via connection pooling
+DATABASE_URL="postgresql://postgres.pviyhpaievlepjrhwrqg:password@aws-1-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Direct connection to the database. Used for migrations
+DIRECT_URL="postgresql://postgres.pviyhpaievlepjrhwrqg:password@aws-1-eu-north-1.pooler.supabase.com:5432/postgres"

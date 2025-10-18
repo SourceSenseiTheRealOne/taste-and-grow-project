@@ -1,0 +1,405 @@
+import { useState, useEffect } from "react";
+import { Plus, Pencil, Trash2, School as SchoolIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { API_URL } from "@/config/api";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+
+interface School {
+  id: string;
+  name: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  teachers?: Array<{ id: string; name: string; email: string }>;
+}
+
+export default function Schools() {
+  const [schools, setSchools] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editingSchool, setEditingSchool] = useState<School | null>(null);
+  const [schoolToDelete, setSchoolToDelete] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    city: "",
+    country: "",
+    phone: "",
+    email: "",
+  });
+
+  useEffect(() => {
+    fetchSchools();
+  }, []);
+
+  const fetchSchools = async () => {
+    try {
+      const response = await fetch(`${API_URL}/schools`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setSchools(data);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to fetch schools",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch schools",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenDialog = (school?: School) => {
+    if (school) {
+      setEditingSchool(school);
+      setFormData({
+        name: school.name,
+        address: school.address || "",
+        city: school.city || "",
+        country: school.country || "",
+        phone: school.phone || "",
+        email: school.email || "",
+      });
+    } else {
+      setEditingSchool(null);
+      setFormData({
+        name: "",
+        address: "",
+        city: "",
+        country: "",
+        phone: "",
+        email: "",
+      });
+    }
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setEditingSchool(null);
+    setFormData({
+      name: "",
+      address: "",
+      city: "",
+      country: "",
+      phone: "",
+      email: "",
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      const url = editingSchool
+        ? `${API_URL}/schools/${editingSchool.id}`
+        : `${API_URL}/schools`;
+
+      const method = editingSchool ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: `School ${editingSchool ? "updated" : "created"} successfully`,
+        });
+        fetchSchools();
+        handleCloseDialog();
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Error",
+          description: error.message || "Failed to save school",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save school",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!schoolToDelete) return;
+
+    try {
+      const response = await fetch(
+        `${API_URL}/schools/${schoolToDelete}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        toast({
+          title: "Success",
+          description: "School deleted successfully",
+        });
+        fetchSchools();
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to delete school",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete school",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleteDialogOpen(false);
+      setSchoolToDelete(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p>Loading schools...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Schools</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage schools and their information
+          </p>
+        </div>
+        <Button onClick={() => handleOpenDialog()} className="gap-2">
+          <Plus className="w-4 h-4" />
+          Add School
+        </Button>
+      </div>
+
+      <div className="bg-card rounded-lg border border-border-light shadow-card">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Country</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Teachers</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {schools.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                  No schools found. Create your first school!
+                </TableCell>
+              </TableRow>
+            ) : (
+              schools.map((school) => (
+                <TableRow key={school.id}>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <SchoolIcon className="w-4 h-4 text-primary" />
+                      {school.name}
+                    </div>
+                  </TableCell>
+                  <TableCell>{school.city || "-"}</TableCell>
+                  <TableCell>{school.country || "-"}</TableCell>
+                  <TableCell>{school.email || "-"}</TableCell>
+                  <TableCell>{school.phone || "-"}</TableCell>
+                  <TableCell>{school.teachers?.length || 0}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleOpenDialog(school)}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setSchoolToDelete(school.id);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {editingSchool ? "Edit School" : "Add New School"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingSchool
+                ? "Update the school information below."
+                : "Enter the school information below."}
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name">Name *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="address">Address</Label>
+                <Input
+                  id="address"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    value={formData.city}
+                    onChange={(e) =>
+                      setFormData({ ...formData, city: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    value={formData.country}
+                    onChange={(e) =>
+                      setFormData({ ...formData, country: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleCloseDialog}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                {editingSchool ? "Update" : "Create"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              school and all associated data.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSchoolToDelete(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
+

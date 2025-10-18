@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: taste-and-grow-api
+    env: node
+    region: frankfurt  # Change to your preferred region (oregon, frankfurt, singapore, etc.)
+    plan: free
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start:prod
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        sync: false  # Set manually in Render dashboard
+      - key: DIRECT_URL
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET
+        generateValue: true  # Automatically generates a secure secret
+
