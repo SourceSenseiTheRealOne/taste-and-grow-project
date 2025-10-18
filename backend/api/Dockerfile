@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
+# Install dependencies (including dev dependencies for build)
 RUN npm ci
 
 # Copy source code
@@ -19,6 +19,9 @@ RUN npx prisma generate
 # Build the application
 RUN npm run build
 
+# Verify the build output exists
+RUN ls -la dist/ && ls -la dist/src/main.js
+
 # Production stage
 FROM node:20-alpine
 
@@ -29,12 +32,16 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --omit=dev
+
+# Generate Prisma Client in production stage
+RUN npx prisma generate
 
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Verify files were copied
+RUN ls -la ./dist && test -f ./dist/src/main.js
 
 # Expose port
 EXPOSE 3000
@@ -42,6 +49,6 @@ EXPOSE 3000
 # Set environment variable
 ENV NODE_ENV=production
 
-# Start the application directly with node (not through npm)
-CMD ["node", "dist/main"]
+# Start the application directly with node
+CMD ["node", "dist/src/main.js"]
 
