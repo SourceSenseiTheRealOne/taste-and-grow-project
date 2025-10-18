@@ -1,11 +1,11 @@
 services:
   - type: web
     name: taste-and-grow-api
-    env: node
+    env: docker
     region: frankfurt  # Change to your preferred region (oregon, frankfurt, singapore, etc.)
     plan: free
-    buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npm run start:prod
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /
     envVars:
       - key: NODE_ENV

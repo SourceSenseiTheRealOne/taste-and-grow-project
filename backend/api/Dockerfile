@@ -39,6 +39,9 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "run", "start:prod"]
+# Set environment variable
+ENV NODE_ENV=production
+
+# Start the application directly with node (not through npm)
+CMD ["node", "dist/main"]
 
