@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Leaf, Building2, TrendingUp, Calendar, LogOut } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { formatCurrency, formatDate } from '../lib/utils';
 
 interface Stats {
@@ -41,27 +40,10 @@ export default function AdminView() {
 
   const checkAuth = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (!user) {
-        navigate('/admin/login');
-        return;
-      }
-
-      const { data: hasAdminRole, error } = await supabase
-        .rpc('has_role', {
-          _user_id: user.id,
-          _role: 'admin',
-        });
-
-      if (error || !hasAdminRole) {
-        await supabase.auth.signOut();
-        navigate('/admin/login');
-        return;
-      }
-
-      setIsAuthorized(true);
-      loadDashboardData();
+      // Admin authentication requires a backend API
+      // For now, we'll just deny access
+      console.log('Admin access requires backend authentication. Please set up your backend API.');
+      navigate('/admin/login');
     } catch (err) {
       navigate('/admin/login');
     }
@@ -69,61 +51,14 @@ export default function AdminView() {
 
   const loadDashboardData = async () => {
     try {
-      const { count: schoolCount } = await supabase
-        .from('schools')
-        .select('*', { count: 'exact', head: true });
-
-      const { count: activeCount } = await supabase
-        .from('school_activations')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'active');
-
-      const { data: raisedData } = await supabase
-        .from('school_activations')
-        .select('total_raised');
-
-      const totalRaised = raisedData?.reduce((sum, item) => sum + (item.total_raised || 0), 0) || 0;
-
-      const today = new Date().toISOString().split('T')[0];
-      const { count: upcomingCount } = await supabase
-        .from('school_activations')
-        .select('*', { count: 'exact', head: true })
-        .gte('event_date', today);
-
+      // Mock data - replace with actual API calls to your backend
       setStats({
-        totalSchools: schoolCount || 0,
-        activeExperiences: activeCount || 0,
-        totalRaised,
-        upcoming: upcomingCount || 0,
+        totalSchools: 0,
+        activeExperiences: 0,
+        totalRaised: 0,
+        upcoming: 0,
       });
-
-      const { data: activationsData } = await supabase
-        .from('school_activations')
-        .select(`
-          id,
-          event_date,
-          fundraiser_amount,
-          total_raised,
-          status,
-          school:schools!inner(school_name, contact_name, city_region),
-          experience:experiences!inner(name)
-        `)
-        .order('event_date', { ascending: false })
-        .limit(50);
-
-      const formattedActivations = activationsData?.map((a: any) => ({
-        id: a.id,
-        school_name: a.school.school_name,
-        contact_name: a.school.contact_name,
-        city_region: a.school.city_region,
-        experience_name: a.experience.name,
-        event_date: a.event_date,
-        fundraiser_amount: a.fundraiser_amount,
-        total_raised: a.total_raised || 0,
-        status: a.status,
-      })) || [];
-
-      setActivations(formattedActivations);
+      setActivations([]);
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     } finally {
@@ -132,7 +67,7 @@ export default function AdminView() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // Mock sign out - replace with actual backend logout call
     navigate('/admin/login');
   };
 

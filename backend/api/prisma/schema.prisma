@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Try Prisma Accelerate: https://pris.ly/cli/prisma-accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -14,28 +14,47 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum UserRole {
+  TEACHER
+  COORDINATOR
+  PRINCIPAL
+  ADMIN
+  USER
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  password  String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  name                String
+  phone               String?
+  password            String
+  role                UserRole @default(USER)
+  preferredLanguage   String?  @default("en") @map("preferred_language")
+  schoolId            String?  @map("school_id")
+  school              School?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
+  schoolAccessCode    String?  @unique @map("school_access_code")
+  parentsLink         String?  @unique @map("parents_link")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model School {
-  id        String    @id @default(uuid())
-  name      String
-  address   String?
-  city      String?
-  country   String?
-  phone     String?
-  email     String?
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  teachers  Teacher[]
+  id                  String   @id @default(uuid())
+  schoolName          String   @default("Unnamed School") @map("school_name")
+  cityRegion          String   @default("Unknown") @map("city_region")
+  contactName         String   @default("Unknown") @map("contact_name")
+  email               String?
+  phone               String?
+  studentCount        Int?     @map("student_count")
+  schoolCode          String   @unique @default(cuid()) @map("school_code")
+  users               User[]
+  teachers            Teacher[]
+  schoolActivations   SchoolActivation[]
+  experiences         Experience[]
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
 
   @@map("schools")
 }
@@ -51,4 +70,38 @@ model Teacher {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("teachers")
+}
+
+model Experience {
+  id                  String   @id @default(uuid())
+  schoolId            String   @map("school_id")
+  school              School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  name                String
+  description         String?
+  basePrice           Float    @map("base_price")
+  itemsIncluded       String[] @map("items_included")
+  active              Boolean  @default(true)
+  schoolActivations   SchoolActivation[]
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("experiences")
+}
+
+model SchoolActivation {
+  id                  String   @id @default(uuid())
+  schoolId            String   @map("school_id")
+  school              School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  experienceId        String   @map("experience_id")
+  experience          Experience @relation(fields: [experienceId], references: [id], onDelete: Cascade)
+  eventDate           DateTime @map("event_date")
+  fundraiserAmount    Float    @default(0) @map("fundraiser_amount")
+  totalRaised         Float    @default(0) @map("total_raised")
+  parentQrCode        String   @unique @map("parent_qr_code")
+  teacherQrCode       String   @unique @map("teacher_qr_code")
+  status              String   @default("pending") // pending, active, delivered
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@map("school_activations")
 }

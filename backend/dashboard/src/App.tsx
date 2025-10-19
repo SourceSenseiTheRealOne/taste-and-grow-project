@@ -4,11 +4,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
+import Analytics from "./pages/Analytics";
+import WebsiteContent from "./pages/WebsiteContent";
 import Corridors from "./pages/Corridors";
 import Cards from "./pages/Cards";
-import Teachers from "./pages/Teachers";
+import Users from "./pages/Users";
 import Schools from "./pages/Schools";
+import SchoolCodes from "./pages/SchoolCodes";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -22,11 +24,13 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Analytics />} />
+            <Route path="website-content" element={<WebsiteContent />} />
+            <Route path="users" element={<Users />} />
+            <Route path="schools" element={<Schools />} />
+            <Route path="school-codes" element={<SchoolCodes />} />
             <Route path="corridors" element={<Corridors />} />
             <Route path="cards" element={<Cards />} />
-            <Route path="teachers" element={<Teachers />} />
-            <Route path="schools" element={<Schools />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

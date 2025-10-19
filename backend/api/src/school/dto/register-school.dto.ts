@@ -1,6 +1,6 @@
-import { IsString, IsOptional, IsEmail, IsNotEmpty, IsInt } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsInt, IsEmail, IsPhoneNumber } from 'class-validator';
 
-export class CreateSchoolDto {
+export class RegisterSchoolDto {
   @IsNotEmpty()
   @IsString()
   schoolName: string;
@@ -25,4 +25,3 @@ export class CreateSchoolDto {
   @IsInt()
   studentCount?: number;
 }
-

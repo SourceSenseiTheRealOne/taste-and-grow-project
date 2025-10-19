@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Euro, AlertCircle, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { formatCurrency, generateQRCode } from '../lib/utils';
 import { format } from 'date-fns';
 
@@ -40,20 +39,15 @@ export default function ActivateExperience() {
 
   const loadExperience = async (experienceId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('experiences')
-        .select('*')
-        .eq('id', experienceId)
-        .maybeSingle();
+      // Mock experience data - replace with actual backend API call
+      const mockExperience: Experience = {
+        id: experienceId,
+        name: 'Taste & Grow Experience',
+        description: 'A wonderful experience for your students',
+        base_price: 25.00,
+      };
 
-      if (error) throw error;
-      if (!data) {
-        setError('Experience not found');
-        setLoading(false);
-        return;
-      }
-
-      setExperience(data);
+      setExperience(mockExperience);
     } catch (err: any) {
       setError(err.message || 'Failed to load experience');
     } finally {
@@ -88,28 +82,11 @@ export default function ActivateExperience() {
     try {
       setIsSubmitting(true);
 
-      const { data: schoolData, error: schoolError } = await supabase
-        .from('schools')
-        .select('id')
-        .eq('school_code', schoolCode)
-        .maybeSingle();
+      // Mock school data lookup - replace with actual backend API call
+      const mockSchoolId = '1';
 
-      if (schoolError) throw schoolError;
-      if (!schoolData) throw new Error('School not found');
-
-      const { data: existingActivation, error: checkError } = await supabase
-        .from('school_activations')
-        .select('id')
-        .eq('school_id', schoolData.id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      if (checkError && checkError.code !== 'PGRST116') throw checkError;
-      if (existingActivation) {
-        setError('You already have an active experience. Please complete it before activating a new one.');
-        setIsSubmitting(false);
-        return;
-      }
+      // Mock existing activation check - replace with actual backend API call
+      // In a real app, you would check if there's already an active experience
 
       const finalAmount = fundraiserMode === 'preset'
         ? fundraiserAmount
@@ -124,19 +101,20 @@ export default function ActivateExperience() {
       const parentQR = generateQRCode();
       const teacherQR = generateQRCode();
 
-      const { error: insertError } = await supabase
-        .from('school_activations')
-        .insert({
-          school_id: schoolData.id,
-          experience_id: experience!.id,
-          event_date: eventDate,
-          fundraiser_amount: finalAmount,
-          parent_qr_code: parentQR,
-          teacher_qr_code: teacherQR,
-          status: 'active',
-        });
+      // Mock database insert - replace with actual backend API call
+      // In a real app, you would send this data to your backend API
+      console.log('Activating experience with:', {
+        school_id: mockSchoolId,
+        experience_id: experience!.id,
+        event_date: eventDate,
+        fundraiser_amount: finalAmount,
+        parent_qr_code: parentQR,
+        teacher_qr_code: teacherQR,
+        status: 'active',
+      });
 
-      if (insertError) throw insertError;
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       setSuccess(true);
       setTimeout(() => {

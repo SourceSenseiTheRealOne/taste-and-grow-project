@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Leaf, AlertCircle, CheckCircle } from 'lucide-react';
 import { registrationSchema, type RegistrationFormData } from '../lib/validation';
-import { supabase } from '../lib/supabase';
 import { generateSchoolCode } from '../lib/utils';
 
 export default function Registration() {
@@ -44,18 +43,9 @@ export default function Registration() {
 
       const code = generateSchoolCode(validated.schoolName);
 
-      const { error } = await supabase.from('schools').insert({
-        school_code: code,
-        school_name: validated.schoolName,
-        city_region: validated.cityRegion,
-        contact_name: validated.contactName,
-        contact_role: validated.contactRole,
-        contact_email: validated.contactEmail,
-        student_count: (typeof validated.studentCount === 'number' && validated.studentCount > 0) ? validated.studentCount : null,
-        preferred_language: validated.preferredLanguage,
-      });
-
-      if (error) throw error;
+      // Mock successful registration - no database call
+      // In a real app, this would send data to your backend API
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API delay
 
       setSchoolCode(code);
       setSuccess(true);

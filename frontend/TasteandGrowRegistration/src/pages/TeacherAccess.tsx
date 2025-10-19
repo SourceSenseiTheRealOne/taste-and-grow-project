@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Leaf, QrCode, Calendar, Euro, Download } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
-import { supabase } from '../lib/supabase';
 import { formatCurrency, formatDate } from '../lib/utils';
 
 interface School {
@@ -49,29 +48,25 @@ export default function TeacherAccess() {
     setError('');
 
     try {
-      const { data: activationData, error: activationError } = await supabase
-        .from('school_activations')
-        .select(`
-          id,
-          event_date,
-          fundraiser_amount,
-          parent_qr_code,
-          status,
-          school:schools!inner(school_code, school_name),
-          experience:experiences!inner(name, base_price)
-        `)
-        .eq('teacher_qr_code', code)
-        .maybeSingle();
+      // Mock activation data - replace with actual backend API call
+      const mockActivationData: any = {
+        id: '1',
+        event_date: '2024-01-15',
+        fundraiser_amount: 5.00,
+        parent_qr_code: 'parent-qr-code-123',
+        status: 'active',
+        school: {
+          school_code: 'MOCK-0001',
+          school_name: 'Your School Name',
+        },
+        experience: {
+          name: 'Taste & Grow Experience',
+          base_price: 25.00,
+        },
+      };
 
-      if (activationError) throw activationError;
-      if (!activationData) {
-        setError('Access code not found');
-        setLoading(false);
-        return;
-      }
-
-      setSchool(activationData.school as any);
-      setActivations([activationData as any]);
+      setSchool(mockActivationData.school as any);
+      setActivations([mockActivationData as any]);
     } catch (err: any) {
       setError(err.message || 'Failed to load data');
     } finally {
@@ -84,46 +79,31 @@ export default function TeacherAccess() {
     setError('');
 
     try {
-      const { data: schoolData, error: schoolError } = await supabase
-        .from('schools')
-        .select('school_code, school_name')
-        .eq('school_code', code)
-        .maybeSingle();
+      // Mock school data - replace with actual backend API call
+      const mockSchoolData = {
+        school_code: code,
+        school_name: 'Your School Name',
+      };
 
-      if (schoolError) throw schoolError;
-      if (!schoolData) {
-        setError('School code not found');
-        setLoading(false);
-        return;
-      }
-
-      setSchool(schoolData);
+      setSchool(mockSchoolData);
       sessionStorage.setItem('schoolCode', code);
 
-      const { data: schoolWithId, error: idError } = await supabase
-        .from('schools')
-        .select('id')
-        .eq('school_code', code)
-        .maybeSingle();
+      // Mock activations data - replace with actual backend API call
+      const mockActivationsData: any[] = [
+        {
+          id: '1',
+          event_date: '2024-01-15',
+          fundraiser_amount: 5.00,
+          parent_qr_code: 'parent-qr-code-123',
+          status: 'active',
+          experience: {
+            name: 'Taste & Grow Experience 1',
+            base_price: 25.00,
+          },
+        },
+      ];
 
-      if (idError) throw idError;
-
-      const { data: activationsData, error: activationsError } = await supabase
-        .from('school_activations')
-        .select(`
-          id,
-          event_date,
-          fundraiser_amount,
-          parent_qr_code,
-          status,
-          experience:experiences!inner(name, base_price)
-        `)
-        .eq('school_id', schoolWithId!.id)
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
-
-      if (activationsError) throw activationsError;
-      setActivations(activationsData as any || []);
+      setActivations(mockActivationsData as any || []);
     } catch (err: any) {
       setError(err.message || 'Failed to load data');
     } finally {

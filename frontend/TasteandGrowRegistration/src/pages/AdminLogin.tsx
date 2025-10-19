@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Leaf, AlertCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -16,28 +15,9 @@ export default function AdminLogin() {
     setIsSubmitting(true);
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) throw signInError;
-      if (!data.user) throw new Error('Authentication failed');
-
-      const { data: roleData, error: roleError } = await supabase
-        .rpc('has_role', {
-          _user_id: data.user.id,
-          _role: 'admin',
-        });
-
-      if (roleError) throw roleError;
-
-      if (!roleData) {
-        await supabase.auth.signOut();
-        throw new Error('Access denied. Admin privileges required.');
-      }
-
-      navigate('/admin');
+      // Admin login is not available without a backend authentication system
+      // This would require integrating with your backend API
+      setError('Admin login requires backend integration. Please set up authentication with your backend API.');
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
     } finally {

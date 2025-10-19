@@ -34,12 +34,14 @@ import { useToast } from "@/hooks/use-toast";
 
 interface School {
   id: string;
-  name: string;
-  address?: string;
-  city?: string;
-  country?: string;
+  schoolName: string;
+  cityRegion: string;
+  contactName: string;
   phone?: string;
   email?: string;
+  studentCount?: number;
+  schoolCode: string;
+  users?: Array<{ id: string; name: string; email: string; role: string }>;
   teachers?: Array<{ id: string; name: string; email: string }>;
 }
 
@@ -53,12 +55,12 @@ export default function Schools() {
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    city: "",
-    country: "",
+    schoolName: "",
+    cityRegion: "",
+    contactName: "",
     phone: "",
     email: "",
+    studentCount: "",
   });
 
   useEffect(() => {
@@ -94,22 +96,22 @@ export default function Schools() {
     if (school) {
       setEditingSchool(school);
       setFormData({
-        name: school.name,
-        address: school.address || "",
-        city: school.city || "",
-        country: school.country || "",
+        schoolName: school.schoolName,
+        cityRegion: school.cityRegion,
+        contactName: school.contactName,
         phone: school.phone || "",
         email: school.email || "",
+        studentCount: school.studentCount?.toString() || "",
       });
     } else {
       setEditingSchool(null);
       setFormData({
-        name: "",
-        address: "",
-        city: "",
-        country: "",
+        schoolName: "",
+        cityRegion: "",
+        contactName: "",
         phone: "",
         email: "",
+        studentCount: "",
       });
     }
     setDialogOpen(true);
@@ -119,12 +121,12 @@ export default function Schools() {
     setDialogOpen(false);
     setEditingSchool(null);
     setFormData({
-      name: "",
-      address: "",
-      city: "",
-      country: "",
+      schoolName: "",
+      cityRegion: "",
+      contactName: "",
       phone: "",
       email: "",
+      studentCount: "",
     });
   };
 
@@ -138,12 +140,18 @@ export default function Schools() {
 
       const method = editingSchool ? "PATCH" : "POST";
 
+      // Convert studentCount to number
+      const dataToSend = {
+        ...formData,
+        studentCount: formData.studentCount ? parseInt(formData.studentCount) : null,
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
@@ -233,19 +241,21 @@ export default function Schools() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>City</TableHead>
-              <TableHead>Country</TableHead>
+              <TableHead>School Name</TableHead>
+              <TableHead>School Code</TableHead>
+              <TableHead>City/Region</TableHead>
+              <TableHead>Contact Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead>Teachers</TableHead>
+              <TableHead>Students</TableHead>
+              <TableHead>Users</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {schools.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground">
+                <TableCell colSpan={9} className="text-center text-muted-foreground">
                   No schools found. Create your first school!
                 </TableCell>
               </TableRow>
@@ -255,14 +265,20 @@ export default function Schools() {
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       <SchoolIcon className="w-4 h-4 text-primary" />
-                      {school.name}
+                      {school.schoolName}
                     </div>
                   </TableCell>
-                  <TableCell>{school.city || "-"}</TableCell>
-                  <TableCell>{school.country || "-"}</TableCell>
+                  <TableCell>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                      {school.schoolCode}
+                    </code>
+                  </TableCell>
+                  <TableCell>{school.cityRegion || "-"}</TableCell>
+                  <TableCell>{school.contactName || "-"}</TableCell>
                   <TableCell>{school.email || "-"}</TableCell>
                   <TableCell>{school.phone || "-"}</TableCell>
-                  <TableCell>{school.teachers?.length || 0}</TableCell>
+                  <TableCell>{school.studentCount || "-"}</TableCell>
+                  <TableCell>{(school.users?.length || 0) + (school.teachers?.length || 0)}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button
@@ -306,67 +322,75 @@ export default function Schools() {
           <form onSubmit={handleSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="name">Name *</Label>
+                <Label htmlFor="schoolName">School Name *</Label>
                 <Input
-                  id="name"
-                  value={formData.name}
+                  id="schoolName"
+                  value={formData.schoolName}
                   onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
+                    setFormData({ ...formData, schoolName: e.target.value })
                   }
                   required
                 />
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="cityRegion">City/Region *</Label>
+                  <Input
+                    id="cityRegion"
+                    value={formData.cityRegion}
+                    onChange={(e) =>
+                      setFormData({ ...formData, cityRegion: e.target.value })
+                    }
+                    placeholder="New York, NY"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="contactName">Contact Name *</Label>
+                  <Input
+                    id="contactName"
+                    value={formData.contactName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, contactName: e.target.value })
+                    }
+                    required
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
-                    id="city"
-                    value={formData.city}
+                    id="email"
+                    type="email"
+                    value={formData.email}
                     onChange={(e) =>
-                      setFormData({ ...formData, city: e.target.value })
+                      setFormData({ ...formData, email: e.target.value })
                     }
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="country">Country</Label>
+                  <Label htmlFor="phone">Phone</Label>
                   <Input
-                    id="country"
-                    value={formData.country}
+                    id="phone"
+                    value={formData.phone}
                     onChange={(e) =>
-                      setFormData({ ...formData, country: e.target.value })
+                      setFormData({ ...formData, phone: e.target.value })
                     }
                   />
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="studentCount">Number of Students</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
+                  id="studentCount"
+                  type="number"
+                  value={formData.studentCount}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData({ ...formData, studentCount: e.target.value })
                   }
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  placeholder="e.g., 450"
+                  min="0"
                 />
               </div>
             </div>

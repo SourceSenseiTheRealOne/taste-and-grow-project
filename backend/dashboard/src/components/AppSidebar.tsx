@@ -1,13 +1,18 @@
 import { NavLink, useLocation } from "react-router-dom";
+import { useState } from "react";
 import { 
   Apple, 
   Trophy, 
   Settings, 
-  Plus,
   BarChart3,
   Sparkles,
-  GraduationCap,
-  School
+  Users,
+  School,
+  Key,
+  Globe,
+  Gamepad2,
+  ChevronDown,
+  FileText
 } from "lucide-react";
 
 import {
@@ -22,33 +27,62 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
-const navigation = [
+interface NavigationItem {
+  title: string;
+  url?: string;
+  icon: any;
+  items?: Array<{ title: string; url: string; icon: any }>;
+}
+
+const navigation: NavigationItem[] = [
   {
-    title: "Dashboard",
+    title: "Analytics",
     url: "/",
     icon: BarChart3,
   },
   {
-    title: "Corridors",
-    url: "/corridors",
-    icon: Apple,
+    title: "Website",
+    icon: Globe,
+    items: [
+      {
+        title: "Website Content",
+        url: "/website-content",
+        icon: FileText,
+      },
+      {
+        title: "Users",
+        url: "/users",
+        icon: Users,
+      },
+      {
+        title: "Schools",
+        url: "/schools",
+        icon: School,
+      },
+      {
+        title: "School Codes",
+        url: "/school-codes",
+        icon: Key,
+      },
+    ],
   },
   {
-    title: "Reward Cards",
-    url: "/cards",
-    icon: Trophy,
-  },
-  {
-    title: "Teachers",
-    url: "/teachers",
-    icon: GraduationCap,
-  },
-  {
-    title: "Schools",
-    url: "/schools",
-    icon: School,
+    title: "Game",
+    icon: Gamepad2,
+    items: [
+      {
+        title: "Corridors",
+        url: "/corridors",
+        icon: Apple,
+      },
+      {
+        title: "Reward Cards",
+        url: "/cards",
+        icon: Trophy,
+      },
+    ],
   },
   {
     title: "Settings",
@@ -61,7 +95,8 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const location = useLocation();
   const collapsed = state === "collapsed";
-  
+  const [openSections, setOpenSections] = useState<string[]>(["Website", "Game"]);
+
   const isActive = (path: string) => {
     if (path === "/") {
       return location.pathname === "/";
@@ -69,12 +104,32 @@ export function AppSidebar() {
     return location.pathname.startsWith(path);
   };
 
+  const isSectionActive = (items?: Array<{ url: string }>) => {
+    if (!items) return false;
+    return items.some((item) => isActive(item.url));
+  };
+
+  const toggleSection = (title: string) => {
+    setOpenSections((prev) =>
+      prev.includes(title) ? prev.filter((s) => s !== title) : [...prev, title]
+    );
+  };
+
   const getNavClass = (path: string) => {
     const active = isActive(path);
     return `w-full justify-start transition-smooth ${
-      active 
-        ? "bg-primary text-primary-foreground shadow-button" 
+      active
+        ? "bg-primary text-primary-foreground shadow-button"
         : "hover:bg-card-secondary text-foreground hover:text-primary"
+    }`;
+  };
+
+  const getParentClass = (items?: Array<{ url: string }>) => {
+    const active = isSectionActive(items);
+    return `w-full justify-between transition-smooth ${
+      active
+        ? "text-primary font-semibold"
+        : "text-foreground hover:text-primary hover:bg-card-secondary"
     }`;
   };
 
@@ -105,32 +160,54 @@ export function AppSidebar() {
             <SidebarMenu className="space-y-1">
               {navigation.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavClass(item.url)}>
-                      <item.icon className="w-5 h-5" />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
+                  {item.items ? (
+                    // Collapsible menu item
+                    <Collapsible
+                      open={openSections.includes(item.title)}
+                      onOpenChange={() => toggleSection(item.title)}
+                    >
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton className={getParentClass(item.items)}>
+                          <div className="flex items-center gap-2">
+                            <item.icon className="w-5 h-5" />
+                            {!collapsed && <span className="font-medium">{item.title}</span>}
+                          </div>
+                          {!collapsed && (
+                            <ChevronDown
+                              className={`w-4 h-4 transition-transform ${
+                                openSections.includes(item.title) ? "rotate-180" : ""
+                              }`}
+                            />
+                          )}
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      {!collapsed && (
+                        <CollapsibleContent className="pl-4 mt-1 space-y-1">
+                          {item.items.map((subItem) => (
+                            <SidebarMenuButton key={subItem.url} asChild>
+                              <NavLink to={subItem.url} className={getNavClass(subItem.url)}>
+                                <subItem.icon className="w-4 h-4" />
+                                <span className="text-sm">{subItem.title}</span>
+                              </NavLink>
+                            </SidebarMenuButton>
+                          ))}
+                        </CollapsibleContent>
+                      )}
+                    </Collapsible>
+                  ) : (
+                    // Regular menu item
+                    <SidebarMenuButton asChild>
+                      <NavLink to={item.url!} className={getNavClass(item.url!)}>
+                        <item.icon className="w-5 h-5" />
+                        {!collapsed && <span className="font-medium">{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {!collapsed && (
-          <div className="mt-6">
-            <Button 
-              variant="outline" 
-              className="w-full bg-gradient-secondary border-0 text-secondary-foreground hover:bg-secondary-light shadow-card"
-              asChild
-            >
-              <NavLink to="/corridors/new">
-                <Plus className="w-4 h-4 mr-2" />
-                New Corridor
-              </NavLink>
-            </Button>
-          </div>
-        )}
       </SidebarContent>
     </Sidebar>
   );

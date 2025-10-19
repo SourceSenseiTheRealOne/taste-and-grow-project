@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Leaf, Calendar, Euro, Info, CheckCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { formatCurrency, formatDate } from '../lib/utils';
 
 interface ActivationData {
@@ -37,31 +36,22 @@ export default function ParentLink() {
 
   const loadActivationData = async (code: string) => {
     try {
-      const { data: activationData, error: activationError } = await supabase
-        .from('school_activations')
-        .select(`
-          id,
-          event_date,
-          fundraiser_amount,
-          school:schools!inner(school_name),
-          experience:experiences!inner(
-            name,
-            description,
-            items_included,
-            base_price
-          )
-        `)
-        .eq('parent_qr_code', code)
-        .maybeSingle();
-
-      if (activationError) throw activationError;
-      if (!activationData) {
-        setError('Experience not found. Please check your link.');
-        setLoading(false);
-        return;
-      }
-
-      setData(activationData as any);
+      // Mock activation data - replace with actual backend API call
+      const mockActivationData: ActivationData = {
+        id: '1',
+        event_date: '2024-01-15',
+        fundraiser_amount: 5.00,
+        school: {
+          school_name: 'Your School Name',
+        },
+        experience: {
+          name: 'Taste & Grow Experience',
+          description: 'A wonderful experience for your child',
+          items_included: ['Item 1', 'Item 2', 'Item 3'],
+          base_price: 25.00,
+        },
+      };
+      setData(mockActivationData);
     } catch (err: any) {
       setError(err.message || 'Failed to load experience details');
     } finally {

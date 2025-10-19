@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Leaf, Mail, MapPin, Users, ArrowRight, Info } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { formatCurrency } from '../lib/utils';
 
 interface School {
@@ -46,38 +45,39 @@ export default function Dashboard() {
 
   const loadDashboardData = async (schoolCode: string) => {
     try {
-      const { data: schoolData, error: schoolError } = await supabase
-        .from('schools')
-        .select('*')
-        .eq('school_code', schoolCode)
-        .maybeSingle();
+      // Mock school data - replace with actual backend API call
+      const mockSchool: School = {
+        id: '1',
+        school_code: schoolCode,
+        school_name: 'Your School Name',
+        city_region: 'Your City/Region',
+        contact_name: 'Contact Person',
+        contact_email: 'contact@school.com',
+        student_count: null,
+      };
+      setSchool(mockSchool);
 
-      if (schoolError) throw schoolError;
-      if (!schoolData) {
-        setError('School not found. Please check your school code.');
-        setLoading(false);
-        return;
-      }
+      // Mock experiences data - replace with actual backend API call
+      const mockExperiences: Experience[] = [
+        {
+          id: '1',
+          name: 'Experience 1',
+          description: 'Description of experience 1',
+          items_included: ['Item 1', 'Item 2', 'Item 3'],
+          base_price: 25.00,
+        },
+        {
+          id: '2',
+          name: 'Experience 2',
+          description: 'Description of experience 2',
+          items_included: ['Item A', 'Item B'],
+          base_price: 35.00,
+        },
+      ];
+      setExperiences(mockExperiences);
 
-      setSchool(schoolData);
-
-      const { data: experiencesData, error: experiencesError } = await supabase
-        .from('experiences')
-        .select('*')
-        .eq('active', true);
-
-      if (experiencesError) throw experiencesError;
-      setExperiences(experiencesData || []);
-
-      const { data: activationsData, error: activationsError } = await supabase
-        .from('school_activations')
-        .select('id')
-        .eq('school_id', schoolData.id)
-        .eq('status', 'active')
-        .maybeSingle();
-
-      if (activationsError && activationsError.code !== 'PGRST116') throw activationsError;
-      setHasActiveExperience(!!activationsData);
+      // Mock active experience check - replace with actual backend API call
+      setHasActiveExperience(false);
 
     } catch (err: any) {
       setError(err.message || 'Failed to load dashboard data');
