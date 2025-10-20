@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Key, Copy, Check, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { API_URL } from "@/config/api";
+import { api } from "@/lib/api-client";
 import {
   Table,
   TableBody,
@@ -50,8 +50,8 @@ export default function SchoolCodes() {
   const fetchData = async () => {
     try {
       // Fetch users with school access codes
-      const usersResponse = await fetch(`${API_URL}/auth/users`);
-      const schoolsResponse = await fetch(`${API_URL}/schools`);
+      const usersResponse = await api.get('/auth/users', { requiresAuth: false });
+      const schoolsResponse = await api.get('/schools', { requiresAuth: false });
 
       if (usersResponse.ok && schoolsResponse.ok) {
         const usersData = await usersResponse.json();

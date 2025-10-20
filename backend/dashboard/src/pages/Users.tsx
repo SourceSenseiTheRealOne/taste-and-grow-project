@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, User as UserIcon, Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { API_URL } from "@/config/api";
+import { api } from "@/lib/api-client";
 import {
   Table,
   TableBody,
@@ -86,9 +86,7 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      // Note: This endpoint needs to be created in the API to fetch all users
-      // For now, we'll use a placeholder
-      const response = await fetch(`${API_URL}/auth/users`);
+      const response = await api.get('/auth/users', { requiresAuth: false });
 
       if (response.ok) {
         const data = await response.json();
@@ -113,7 +111,7 @@ export default function Users() {
 
   const fetchSchools = async () => {
     try {
-      const response = await fetch(`${API_URL}/schools`);
+      const response = await api.get('/schools', { requiresAuth: false });
 
       if (response.ok) {
         const data = await response.json();
@@ -166,25 +164,15 @@ export default function Users() {
     e.preventDefault();
 
     try {
-      const url = editingUser
-        ? `${API_URL}/auth/users/${editingUser.id}`
-        : `${API_URL}/auth/register`;
-
-      const method = editingUser ? "PATCH" : "POST";
-
       // Don't send password if empty when editing
       const dataToSend = { ...formData };
       if (editingUser && !dataToSend.password) {
         delete dataToSend.password;
       }
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = editingUser
+        ? await api.patch(`/auth/users/${editingUser.id}`, dataToSend)
+        : await api.post('/auth/register', dataToSend, { requiresAuth: false });
 
       if (response.ok) {
         toast({
@@ -201,10 +189,10 @@ export default function Users() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to save user",
+        description: error.message || "Failed to save user",
         variant: "destructive",
       });
     }
@@ -214,12 +202,7 @@ export default function Users() {
     if (!userToDelete) return;
 
     try {
-      const response = await fetch(
-        `${API_URL}/auth/users/${userToDelete}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await api.delete(`/auth/users/${userToDelete}`);
 
       if (response.ok) {
         toast({
@@ -234,10 +217,10 @@ export default function Users() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to delete user",
+        description: error.message || "Failed to delete user",
         variant: "destructive",
       });
     } finally {

@@ -29,7 +29,7 @@ export class SchoolController {
     @Request() req,
     @Body(ValidationPipe) registerSchoolDto: RegisterSchoolDto,
   ) {
-    return this.schoolService.registerSchool(req.user.sub, registerSchoolDto);
+    return this.schoolService.registerSchool(req.user.id, registerSchoolDto);
   }
 
   /**
@@ -41,7 +41,7 @@ export class SchoolController {
     @Request() req,
     @Body(ValidationPipe) createSchoolDto: CreateSchoolDto,
   ) {
-    return this.schoolService.create(req.user.sub, createSchoolDto);
+    return this.schoolService.create(req.user.id, createSchoolDto);
   }
 
   /**
@@ -78,7 +78,7 @@ export class SchoolController {
     @Param('id') id: string,
     @Body(ValidationPipe) updateSchoolDto: UpdateSchoolDto,
   ) {
-    return this.schoolService.update(req.user.sub, id, updateSchoolDto);
+    return this.schoolService.update(req.user.id, id, updateSchoolDto);
   }
 
   /**
@@ -87,7 +87,7 @@ export class SchoolController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Request() req, @Param('id') id: string) {
-    return this.schoolService.remove(req.user.sub, id);
+    return this.schoolService.remove(req.user.id, id);
   }
 }
 

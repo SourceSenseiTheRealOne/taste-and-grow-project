@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, School as SchoolIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { API_URL } from "@/config/api";
+import { api } from "@/lib/api-client";
 import {
   Table,
   TableBody,
@@ -69,7 +69,7 @@ export default function Schools() {
 
   const fetchSchools = async () => {
     try {
-      const response = await fetch(`${API_URL}/schools`);
+      const response = await api.get('/schools', { requiresAuth: false });
 
       if (response.ok) {
         const data = await response.json();
@@ -134,25 +134,15 @@ export default function Schools() {
     e.preventDefault();
 
     try {
-      const url = editingSchool
-        ? `${API_URL}/schools/${editingSchool.id}`
-        : `${API_URL}/schools`;
-
-      const method = editingSchool ? "PATCH" : "POST";
-
       // Convert studentCount to number
       const dataToSend = {
         ...formData,
         studentCount: formData.studentCount ? parseInt(formData.studentCount) : null,
       };
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const response = editingSchool
+        ? await api.patch(`/schools/${editingSchool.id}`, dataToSend)
+        : await api.post('/schools', dataToSend);
 
       if (response.ok) {
         toast({
@@ -169,10 +159,10 @@ export default function Schools() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to save school",
+        description: error.message || "Failed to save school",
         variant: "destructive",
       });
     }
@@ -182,12 +172,7 @@ export default function Schools() {
     if (!schoolToDelete) return;
 
     try {
-      const response = await fetch(
-        `${API_URL}/schools/${schoolToDelete}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await api.delete(`/schools/${schoolToDelete}`);
 
       if (response.ok) {
         toast({
@@ -202,10 +187,10 @@ export default function Schools() {
           variant: "destructive",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to delete school",
+        description: error.message || "Failed to delete school",
         variant: "destructive",
       });
     } finally {

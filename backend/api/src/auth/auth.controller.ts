@@ -30,13 +30,13 @@ export class AuthController {
     @Param('id') id: string,
     @Body(ValidationPipe) updateDto: Partial<RegisterDto>,
   ) {
-    return this.authService.updateUser(req.user.sub, id, updateDto);
+    return this.authService.updateUser(req.user.id, id, updateDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('users/:id')
   async deleteUser(@Request() req, @Param('id') id: string) {
-    return this.authService.deleteUser(req.user.sub, id);
+    return this.authService.deleteUser(req.user.id, id);
   }
 }
 

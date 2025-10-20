@@ -68,6 +68,31 @@ Then commit and push to trigger a Vercel deployment.
 
 After deployment:
 1. Open your Vercel dashboard URL
-2. Navigate to Schools or Teachers
-3. You should see the data from your production API!
+2. You'll be redirected to the login page (`/login`)
+3. Login with admin credentials
+4. You should see the dashboard with data from your production API!
+
+## Authentication Setup
+
+⚠️ **Important**: The dashboard now requires admin authentication.
+
+### For Production Deployment:
+
+1. **Create Admin User**: Use your production API to create an admin user:
+```bash
+curl -X POST https://your-api-url.onrender.com/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Admin User",
+    "email": "admin@tasteandgrow.com",
+    "password": "YourSecurePassword123!",
+    "role": "ADMIN"
+  }'
+```
+
+2. **Login**: Navigate to your Vercel URL and login with the admin credentials
+
+3. **Security Note**: Only users with the "ADMIN" role can access the dashboard
+
+For detailed authentication documentation, see [AUTH_SETUP.md](./AUTH_SETUP.md)
 
