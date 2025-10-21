@@ -105,3 +105,28 @@ model SchoolActivation {
 
   @@map("school_activations")
 }
+
+enum ContentType {
+  HERO
+  HOW_IT_WORKS
+  FOOD_KIT
+  TESTIMONIAL
+  FAQ
+  FOOTER
+  SEO
+}
+
+model WebsiteContent {
+  id          String      @id @default(uuid())
+  section     ContentType
+  key         String      // Unique key for the content piece (e.g., "hero_title", "step_1_title")
+  value       String      @db.Text // The actual content
+  metadata    Json?       // Additional data (colors, images URLs, etc.)
+  order       Int         @default(0) // For ordering items in lists
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@unique([section, key])
+  @@map("website_content")
+}

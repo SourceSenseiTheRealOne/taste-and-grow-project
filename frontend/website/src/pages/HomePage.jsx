@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useWebsiteContent } from '../hooks/useWebsiteContent';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
@@ -17,6 +18,7 @@ import seedGuardiansImg from '../assets/CoverSeedGuardians.png';
 export default function HomePage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { content, loading } = useWebsiteContent();
   const [heroTextIndex, setHeroTextIndex] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isWheatVideoPlaying, setIsWheatVideoPlaying] = useState(false);
@@ -119,6 +121,18 @@ export default function HomePage() {
     logout();
     navigate('/');
   };
+
+  // Show loading state while content is being fetched
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-green-50 flex items-center justify-center">
+        <div className="text-center">
+          <Sprout className="w-16 h-16 text-green-600 animate-pulse mx-auto mb-4" />
+          <p className="text-xl text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-100 via-white to-green-50">
@@ -251,10 +265,10 @@ export default function HomePage() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-700 mb-4 leading-relaxed max-w-3xl mx-auto">
-            Taste & Grow helps schools turn real food into learning and fundraising — with students leading their own school e-market and families ordering online.
+            {content.HERO?.subtitle || 'Taste & Grow helps schools turn real food into learning and fundraising — with students leading their own school e-market and families ordering online.'}
           </p>
           <p className="text-lg md:text-xl text-gray-900 mb-12 max-w-3xl mx-auto italic font-semibold">
-            Built for schools. Inspired by nature.
+            {content.HERO?.tagline || 'Built for schools. Inspired by nature.'}
           </p>
 
           <div className="flex justify-center">
@@ -269,14 +283,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works Section - same as before */}
+      {/* How It Works Section */}
       <section id="how-it-works" className="section-padding bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6 text-gray-800">
-            How It Works
+            {content.HOW_IT_WORKS?.title || 'How It Works'}
           </h2>
           <p className="text-lg md:text-xl text-center text-gray-600 mb-16 max-w-3xl mx-auto">
-            Each school runs a school e-market where students take the lead, families order online, and everyone shares in the experience.
+            {content.HOW_IT_WORKS?.subtitle || 'Each school runs a school e-market where students take the lead, families order online, and everyone shares in the experience.'}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -288,10 +302,10 @@ export default function HomePage() {
                     <Sprout className="w-10 h-10 text-white" />
                   </div>
                   <div className="text-5xl font-bold text-green-600 mb-2">1</div>
-                  <CardTitle className="text-xl font-bold mb-4">Teacher Registers</CardTitle>
+                  <CardTitle className="text-xl font-bold mb-4">{content.HOW_IT_WORKS?.step_1_title || 'Teacher Registers'}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">Have your class take the lead. Choose one of the three food kits and pick your preferred date.</p>
+                  <p className="text-gray-600 leading-relaxed">{content.HOW_IT_WORKS?.step_1_desc || 'Have your class take the lead. Choose one of the three food kits and pick your preferred date.'}</p>
                 </CardContent>
               </Card>
             </div>
@@ -304,10 +318,10 @@ export default function HomePage() {
                     <ShoppingCart className="w-10 h-10 text-white" />
                   </div>
                   <div className="text-5xl font-bold text-amber-600 mb-2">2</div>
-                  <CardTitle className="text-xl font-bold mb-4">Parents Buy Online</CardTitle>
+                  <CardTitle className="text-xl font-bold mb-4">{content.HOW_IT_WORKS?.step_2_title || 'Parents Buy Online'}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">Families order easily through a QR code. We deliver everything directly to the school, ready for the big day.</p>
+                  <p className="text-gray-600 leading-relaxed">{content.HOW_IT_WORKS?.step_2_desc || 'Families order easily through a QR code. We deliver everything directly to the school, ready for the big day.'}</p>
                 </CardContent>
               </Card>
             </div>
@@ -320,10 +334,10 @@ export default function HomePage() {
                     <Users className="w-10 h-10 text-white" />
                   </div>
                   <div className="text-5xl font-bold text-blue-600 mb-2">3</div>
-                  <CardTitle className="text-xl font-bold mb-4">Students Lead the Market</CardTitle>
+                  <CardTitle className="text-xl font-bold mb-4">{content.HOW_IT_WORKS?.step_3_title || 'Students Lead the Market'}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">Students pack, present, and share what they've learned — turning their classroom into a mini market stand.</p>
+                  <p className="text-gray-600 leading-relaxed">{content.HOW_IT_WORKS?.step_3_desc || "Students pack, present, and share what they've learned — turning their classroom into a mini market stand."}</p>
                 </CardContent>
               </Card>
             </div>
@@ -336,10 +350,10 @@ export default function HomePage() {
                     <TrendingUp className="w-10 h-10 text-white" />
                   </div>
                   <div className="text-5xl font-bold text-purple-600 mb-2">4</div>
-                  <CardTitle className="text-xl font-bold mb-4">School Grows</CardTitle>
+                  <CardTitle className="text-xl font-bold mb-4">{content.HOW_IT_WORKS?.step_4_title || 'School Grows'}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <p className="text-gray-600 leading-relaxed">Each order raises funds and builds community through real, hands-on learning.</p>
+                  <p className="text-gray-600 leading-relaxed">{content.HOW_IT_WORKS?.step_4_desc || 'Each order raises funds and builds community through real, hands-on learning.'}</p>
                 </CardContent>
               </Card>
             </div>
@@ -361,10 +375,10 @@ export default function HomePage() {
       <section id="food-kits" className="section-padding bg-gradient-to-b from-green-50 to-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6 text-gray-800">
-            Real Superfoods. Real Learning. Real Impact.
+            {content.FOOD_KIT?.section_title || 'Real Superfoods. Real Learning. Real Impact.'}
           </h2>
           <p className="text-xl text-center text-gray-600 mb-16 max-w-4xl mx-auto">
-            Each Superfood Kit connects classrooms to powerful foods, inspiring students to explore their origins, taste their benefits, and share their story. It's time to Play, Learn, Taste, and Grow!
+            {content.FOOD_KIT?.section_subtitle || "Each Superfood Kit connects classrooms to powerful foods, inspiring students to explore their origins, taste their benefits, and share their story. It's time to Play, Learn, Taste, and Grow!"}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
@@ -665,8 +679,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4">Taste & Grow</h3>
-              <p className="text-gray-300 italic">Built for schools. Inspired by nature.</p>
+              <h3 className="text-2xl font-bold mb-4">{content.FOOTER?.company_name || 'Taste & Grow'}</h3>
+              <p className="text-gray-300 italic">{content.FOOTER?.tagline || 'Built for schools. Inspired by nature.'}</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Quick Links</h4>
@@ -683,10 +697,10 @@ export default function HomePage() {
           </div>
           <div className="border-t border-gray-700 pt-8 text-center">
             <p className="text-gray-400">
-              Email: <a href="mailto:hello@tasteandgrow.com" className="text-green-400 hover:text-green-300 transition-colors">hello@tasteandgrow.com</a>
+              Email: <a href={`mailto:${content.FOOTER?.email || 'hello@tasteandgrow.com'}`} className="text-green-400 hover:text-green-300 transition-colors">{content.FOOTER?.email || 'hello@tasteandgrow.com'}</a>
             </p>
             <p className="text-gray-500 text-sm mt-4">
-              © 2025 Taste & Grow. All rights reserved.
+              {content.FOOTER?.copyright || '© 2025 Taste & Grow. All rights reserved.'}
             </p>
           </div>
         </div>
