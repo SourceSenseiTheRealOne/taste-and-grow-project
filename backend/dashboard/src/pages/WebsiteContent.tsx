@@ -214,15 +214,18 @@ export default function WebsiteContent() {
   }
 
   const heroContents = getContentBySection('HERO');
-  const howItWorksContents = getContentBySection('HOW_IT_WORKS');
-  const foodKitContents = getContentBySection('FOOD_KIT');
+  const cinematicIntroContents = getContentBySection('CINEMATIC_INTRO');
+  const missionRolesContents = getContentBySection('MISSION_ROLES');
+  const missionCardsContents = getContentBySection('MISSION_CARDS');
+  const seedCardsContents = getContentBySection('SEED_CARDS');
+  const finalCTAContents = getContentBySection('FINAL_CTA');
   const footerContents = getContentBySection('FOOTER');
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Website Content</h1>
+          <h1 className="text-3xl font-bold text-foreground">Website Content (New Website)</h1>
           <p className="text-muted-foreground mt-1">
             Edit website content and see changes reflect on the live site
           </p>
@@ -236,10 +239,13 @@ export default function WebsiteContent() {
       </div>
 
       <Tabs defaultValue="hero" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="hero">Hero Section</TabsTrigger>
-          <TabsTrigger value="how-it-works">How It Works</TabsTrigger>
-          <TabsTrigger value="food-kits">Food Kits</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-7">
+          <TabsTrigger value="hero">Hero</TabsTrigger>
+          <TabsTrigger value="cinematic-intro">Cinematic Intro</TabsTrigger>
+          <TabsTrigger value="mission-roles">Mission Roles</TabsTrigger>
+          <TabsTrigger value="mission-cards">Mission Cards</TabsTrigger>
+          <TabsTrigger value="seed-cards">Seed Cards</TabsTrigger>
+          <TabsTrigger value="final-cta">Final CTA</TabsTrigger>
           <TabsTrigger value="footer">Footer</TabsTrigger>
         </TabsList>
 
@@ -278,58 +284,23 @@ export default function WebsiteContent() {
           </Card>
         </TabsContent>
 
-        {/* How It Works */}
-        <TabsContent value="how-it-works" className="space-y-4">
+        {/* Cinematic Intro */}
+        <TabsContent value="cinematic-intro" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>How It Works Section</CardTitle>
+              <CardTitle>Cinematic Intro Section</CardTitle>
               <CardDescription>
-                4-step process explaining how Taste & Grow works
+                "The World Is Losing Its Taste" section with statistics
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {howItWorksContents.map(content => renderContentEditor(content))}
-              
-              <div className="flex justify-end pt-4">
-                <Button 
-                  onClick={() => handleBulkSave(howItWorksContents)} 
-                  disabled={saving}
-                  className="gap-2"
-                >
-                  {saving ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="w-4 h-4" />
-                      Save Changes
-                    </>
-                  )}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Food Kits */}
-        <TabsContent value="food-kits" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Food Kits Section</CardTitle>
-              <CardDescription>
-                Section titles and descriptions for the food kits showcase
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {foodKitContents.length > 0 ? (
+              {cinematicIntroContents.length > 0 ? (
                 <>
-                  {foodKitContents.map(content => renderContentEditor(content))}
+                  {cinematicIntroContents.map(content => renderContentEditor(content))}
                   
                   <div className="flex justify-end pt-4">
                     <Button 
-                      onClick={() => handleBulkSave(foodKitContents)} 
+                      onClick={() => handleBulkSave(cinematicIntroContents)} 
                       disabled={saving}
                       className="gap-2"
                     >
@@ -350,7 +321,187 @@ export default function WebsiteContent() {
               ) : (
                 <Alert>
                   <AlertDescription>
-                    No food kit content found. Food kit details are currently hardcoded in the website.
+                    No cinematic intro content found. Initialize default content to get started.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Mission Roles */}
+        <TabsContent value="mission-roles" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Mission Roles Section</CardTitle>
+              <CardDescription>
+                "Select Your Role" section with character roles and missions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {missionRolesContents.length > 0 ? (
+                <>
+                  {missionRolesContents.map(content => renderContentEditor(content))}
+                  
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      onClick={() => handleBulkSave(missionRolesContents)} 
+                      disabled={saving}
+                      className="gap-2"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    No mission roles content found. Initialize default content to get started.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Mission Cards */}
+        <TabsContent value="mission-cards" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Mission Cards Section</CardTitle>
+              <CardDescription>
+                "Every Class Has a Mission" section with 4 missions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {missionCardsContents.length > 0 ? (
+                <>
+                  {missionCardsContents.map(content => renderContentEditor(content))}
+                  
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      onClick={() => handleBulkSave(missionCardsContents)} 
+                      disabled={saving}
+                      className="gap-2"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    No mission cards content found. Initialize default content to get started.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Seed Cards */}
+        <TabsContent value="seed-cards" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Seed Cards Section</CardTitle>
+              <CardDescription>
+                "The Seed Vault" section with seed cards
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {seedCardsContents.length > 0 ? (
+                <>
+                  {seedCardsContents.map(content => renderContentEditor(content))}
+                  
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      onClick={() => handleBulkSave(seedCardsContents)} 
+                      disabled={saving}
+                      className="gap-2"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    No seed cards content found. Initialize default content to get started.
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Final CTA */}
+        <TabsContent value="final-cta" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Final CTA Section</CardTitle>
+              <CardDescription>
+                "Together, We Keep the Taste Alive" call-to-action section
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {finalCTAContents.length > 0 ? (
+                <>
+                  {finalCTAContents.map(content => renderContentEditor(content))}
+                  
+                  <div className="flex justify-end pt-4">
+                    <Button 
+                      onClick={() => handleBulkSave(finalCTAContents)} 
+                      disabled={saving}
+                      className="gap-2"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          Save Changes
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <Alert>
+                  <AlertDescription>
+                    No final CTA content found. Initialize default content to get started.
                   </AlertDescription>
                 </Alert>
               )}

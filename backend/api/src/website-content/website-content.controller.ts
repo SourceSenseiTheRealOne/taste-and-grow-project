@@ -12,6 +12,7 @@ import {
 import { WebsiteContentService } from './website-content.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { UpdateContentDto } from './dto/update-content.dto';
+import { CreateMissionRoleDto, UpdateMissionRoleDto } from './dto/mission-role.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('website-content')
@@ -81,6 +82,46 @@ export class WebsiteContentController {
   @Post('initialize')
   initialize(@Request() req) {
     return this.contentService.initializeDefaultContent(req.user.id);
+  }
+
+  /**
+   * Admin: Get all mission roles
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get('mission-roles')
+  getAllMissionRoles(@Request() req) {
+    return this.contentService.getAllMissionRoles(req.user.id);
+  }
+
+  /**
+   * Admin: Create a new mission role
+   */
+  @UseGuards(JwtAuthGuard)
+  @Post('mission-roles')
+  createMissionRole(@Request() req, @Body() createDto: CreateMissionRoleDto) {
+    return this.contentService.createMissionRole(req.user.id, createDto);
+  }
+
+  /**
+   * Admin: Update a mission role
+   */
+  @UseGuards(JwtAuthGuard)
+  @Patch('mission-roles/:roleId')
+  updateMissionRole(
+    @Request() req,
+    @Param('roleId') roleId: string,
+    @Body() updateDto: UpdateMissionRoleDto,
+  ) {
+    return this.contentService.updateMissionRole(req.user.id, roleId, updateDto);
+  }
+
+  /**
+   * Admin: Delete a mission role
+   */
+  @UseGuards(JwtAuthGuard)
+  @Delete('mission-roles/:roleId')
+  deleteMissionRole(@Request() req, @Param('roleId') roleId: string) {
+    return this.contentService.deleteMissionRole(req.user.id, roleId);
   }
 }
 

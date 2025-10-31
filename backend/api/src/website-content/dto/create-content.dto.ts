@@ -8,6 +8,11 @@ export enum ContentType {
   FAQ = 'FAQ',
   FOOTER = 'FOOTER',
   SEO = 'SEO',
+  CINEMATIC_INTRO = 'CINEMATIC_INTRO',
+  MISSION_ROLES = 'MISSION_ROLES',
+  MISSION_CARDS = 'MISSION_CARDS',
+  SEED_CARDS = 'SEED_CARDS',
+  FINAL_CTA = 'FINAL_CTA',
 }
 
 export class CreateContentDto {

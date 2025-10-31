@@ -114,6 +114,11 @@ enum ContentType {
   FAQ
   FOOTER
   SEO
+  CINEMATIC_INTRO
+  MISSION_ROLES
+  MISSION_CARDS
+  SEED_CARDS
+  FINAL_CTA
 }
 
 model WebsiteContent {

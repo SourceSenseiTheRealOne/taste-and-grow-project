@@ -6,17 +6,22 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
   // Enable CORS with detailed configuration
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  
   app.enableCors({
-    origin: [
-      'http://localhost:5173', // Vite dev server
-      'http://localhost:3000', // Same origin
-      'https://taste-and-grow-project-1.onrender.com', // Production backend
-      'https://*.vercel.app', // Vercel deployments
-      /\.vercel\.app$/, // Vercel preview deployments
-    ],
+    origin: isDevelopment
+      ? true // Allow all origins in development (includes localhost:8081 and any other port)
+      : [
+          'https://taste-and-grow-project-1.onrender.com', // Production backend
+          'https://semente-do-sabor.vercel.app', // Production frontend (Portuguese website)
+          /\.vercel\.app$/, // All Vercel deployments (includes previews)
+          // Add your production frontend URLs here
+        ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    exposedHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 86400, // 24 hours - cache preflight requests
   });
   
   // Enable global validation

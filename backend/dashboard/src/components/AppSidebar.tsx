@@ -12,7 +12,8 @@ import {
   Globe,
   Gamepad2,
   ChevronDown,
-  FileText
+  FileText,
+  UserCircle
 } from "lucide-react";
 
 import {
@@ -50,6 +51,11 @@ const navigation: NavigationItem[] = [
         title: "Website Content",
         url: "/website-content",
         icon: FileText,
+      },
+      {
+        title: "Mission Roles",
+        url: "/mission-roles",
+        icon: UserCircle,
       },
       {
         title: "Users",
