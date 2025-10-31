@@ -121,6 +121,25 @@ enum ContentType {
   FINAL_CTA
 }
 
+enum SeedStatus {
+  Heritage
+  AtRisk
+  Endangered
+  Lost
+}
+
+enum SeedEra {
+  Heritage
+  Ancestral
+  Millennial
+}
+
+enum SeedRarity {
+  Common
+  Rare
+  Legendary
+}
+
 model WebsiteContent {
   id          String      @id @default(uuid())
   section     ContentType
@@ -134,4 +153,32 @@ model WebsiteContent {
 
   @@unique([section, key])
   @@map("website_content")
+}
+
+model SeedCard {
+  id              String      @id @default(uuid())
+  seedId          String      @unique @map("seed_id") // e.g., "PT-APP-0001"
+  commonName      String      @map("common_name")
+  scientific      String
+  type            String      // Fruit, Grain, Nut, Vegetable, Herb
+  region          String
+  status          SeedStatus
+  era             SeedEra
+  rarity          SeedRarity
+  ageYears        Int         @map("age_years")
+  story            String      @db.Text
+  tasteProfile    Json        @map("taste_profile") // { sweetness: number, acidity: number, complexity: number }
+  images           String[]    // Array of image URLs
+  sources          String[]    // Array of source strings
+  featured         Boolean     @default(false) // Featured seeds shown on home page
+  locked           Boolean     @default(false)
+  order            Int         @default(0) // For ordering in lists
+  active           Boolean     @default(true)
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+
+  @@map("seed_cards")
+  @@index([featured, active])
+  @@index([status])
+  @@index([order])
 }

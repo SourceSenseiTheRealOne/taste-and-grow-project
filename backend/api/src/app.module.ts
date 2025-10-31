@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { SchoolModule } from './school/school.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { WebsiteContentModule } from './website-content/website-content.module';
+import { SeedCardModule } from './seed-card/seed-card.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, SchoolModule, TeacherModule, WebsiteContentModule],
+  imports: [PrismaModule, AuthModule, SchoolModule, TeacherModule, WebsiteContentModule, SeedCardModule],
   controllers: [AppController],
   providers: [AppService],
 })

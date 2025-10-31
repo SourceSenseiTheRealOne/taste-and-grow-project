@@ -13,7 +13,8 @@ import {
   Gamepad2,
   ChevronDown,
   FileText,
-  UserCircle
+  UserCircle,
+  Sprout
 } from "lucide-react";
 
 import {
@@ -56,6 +57,11 @@ const navigation: NavigationItem[] = [
         title: "Mission Roles",
         url: "/mission-roles",
         icon: UserCircle,
+      },
+      {
+        title: "Seed Cards",
+        url: "/seed-cards",
+        icon: Sprout,
       },
       {
         title: "Users",

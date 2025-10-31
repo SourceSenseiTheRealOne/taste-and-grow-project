@@ -528,6 +528,303 @@ async function main() {
 
   console.log(`✅ Created ${websiteContent.length} website content items\n`);
 
+  console.log('🌱 Creating seed cards...\n');
+
+  // ========== SEED CARDS ==========
+  // Convert status from "At Risk" to "AtRisk" for database
+  const convertStatus = (status: string): string => {
+    if (status === 'At Risk') return 'AtRisk';
+    return status;
+  };
+
+  const seedCardsData = [
+    // 12 Unlocked Seeds
+    {
+      seedId: 'PT-APP-0001',
+      commonName: 'Maçã Bravo de Esmolfe',
+      scientific: 'Malus domestica \'Bravo de Esmolfe\'',
+      type: 'Fruit',
+      region: 'Beira Alta (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Heritage',
+      rarity: 'Rare',
+      ageYears: 200,
+      story: 'Fragrant PDO apple from high, cool valleys.',
+      tasteProfile: { sweetness: 70, acidity: 55, complexity: 78 },
+      images: ['/src/assets/seeds/apple-green-poly.png'],
+      sources: ['DGADR', 'INIAV'],
+      featured: true,
+      locked: false,
+      order: 1,
+      active: true,
+    },
+    {
+      seedId: 'PT-PEAR-0002',
+      commonName: 'Pêra Rocha',
+      scientific: 'Pyrus communis \'Rocha\'',
+      type: 'Fruit',
+      region: 'Oeste (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Heritage',
+      rarity: 'Common',
+      ageYears: 180,
+      story: 'Crisp, floral pear with protected status.',
+      tasteProfile: { sweetness: 60, acidity: 45, complexity: 62 },
+      images: ['/src/assets/seeds/pear-poly.png'],
+      sources: ['DGADR'],
+      featured: true,
+      locked: false,
+      order: 2,
+      active: true,
+    },
+    {
+      seedId: 'PT-PEAR-0003',
+      commonName: 'Pêra São Bartolomeu',
+      scientific: 'Pyrus communis \'São Bartolomeu\'',
+      type: 'Fruit',
+      region: 'Beira Baixa (Mainland PT)',
+      status: convertStatus('At Risk'),
+      era: 'Ancestral',
+      rarity: 'Rare',
+      ageYears: 250,
+      story: 'Traditional drying pear with intense aroma.',
+      tasteProfile: { sweetness: 72, acidity: 38, complexity: 75 },
+      images: ['/src/assets/seeds/pear-poly.png'],
+      sources: ['DGADR'],
+      featured: true,
+      locked: false,
+      order: 3,
+      active: true,
+    },
+    {
+      seedId: 'PT-WHE-0004',
+      commonName: 'Trigo Barbela',
+      scientific: 'Triticum aestivum \'Barbela\'',
+      type: 'Grain',
+      region: 'Centro (Mainland PT)',
+      status: convertStatus('Endangered'),
+      era: 'Ancestral',
+      rarity: 'Legendary',
+      ageYears: 800,
+      story: 'Ancient Portuguese wheat revived by guardians.',
+      tasteProfile: { sweetness: 35, acidity: 40, complexity: 82 },
+      images: ['/src/assets/seeds/wheat-poly.png'],
+      sources: ['SlowFood Ark', 'INIAV'],
+      featured: true,
+      locked: false,
+      order: 4,
+      active: true,
+    },
+    {
+      seedId: 'PT-WHE-0005',
+      commonName: 'Trigo Preto Amarelo',
+      scientific: 'Triticum aestivum \'Preto Amarelo\'',
+      type: 'Grain',
+      region: 'Norte (Mainland PT)',
+      status: convertStatus('Endangered'),
+      era: 'Ancestral',
+      rarity: 'Legendary',
+      ageYears: 600,
+      story: 'Dark-hulled wheat preserved by few growers.',
+      tasteProfile: { sweetness: 30, acidity: 42, complexity: 80 },
+      images: ['/src/assets/seeds/wheat-poly-2.png'],
+      sources: ['INIAV'],
+      featured: true,
+      locked: false,
+      order: 5,
+      active: true,
+    },
+    {
+      seedId: 'PT-CHS-0006',
+      commonName: 'Castanha Longal',
+      scientific: 'Castanea sativa \'Longal\'',
+      type: 'Nut',
+      region: 'Trás-os-Montes (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Ancestral',
+      rarity: 'Common',
+      ageYears: 350,
+      story: 'Firm, sweet chestnut from mountain orchards.',
+      tasteProfile: { sweetness: 65, acidity: 25, complexity: 70 },
+      images: ['/src/assets/seeds/chestnut-poly.png'],
+      sources: ['ISA', 'INIAV'],
+      featured: true,
+      locked: false,
+      order: 6,
+      active: true,
+    },
+    {
+      seedId: 'PT-CHS-0007',
+      commonName: 'Castanha Judia',
+      scientific: 'Castanea sativa \'Judia\'',
+      type: 'Nut',
+      region: 'Trás-os-Montes (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Ancestral',
+      rarity: 'Common',
+      ageYears: 400,
+      story: 'Large, aromatic chestnut used for roasting.',
+      tasteProfile: { sweetness: 68, acidity: 22, complexity: 72 },
+      images: ['/src/assets/seeds/chestnut-poly.png'],
+      sources: ['ISA'],
+      featured: false,
+      locked: false,
+      order: 7,
+      active: true,
+    },
+    {
+      seedId: 'PT-CHS-0008',
+      commonName: 'Castanha Martaínha',
+      scientific: 'Castanea sativa \'Martaínha\'',
+      type: 'Nut',
+      region: 'Beira Interior (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Ancestral',
+      rarity: 'Rare',
+      ageYears: 300,
+      story: 'Regional pillar with silky texture.',
+      tasteProfile: { sweetness: 66, acidity: 24, complexity: 69 },
+      images: ['/src/assets/seeds/chestnut-poly.png'],
+      sources: ['ISA'],
+      featured: false,
+      locked: false,
+      order: 8,
+      active: true,
+    },
+    {
+      seedId: 'PT-FIG-0009',
+      commonName: 'Figo Pingo de Mel',
+      scientific: 'Ficus carica \'Pingo de Mel\'',
+      type: 'Fruit',
+      region: 'Centro/Sul (Mainland PT)',
+      status: convertStatus('Heritage'),
+      era: 'Ancestral',
+      rarity: 'Common',
+      ageYears: 350,
+      story: 'Honey-drop fig prized in summer markets.',
+      tasteProfile: { sweetness: 85, acidity: 20, complexity: 60 },
+      images: ['/src/assets/seeds/peach-poly.png'],
+      sources: ['DGADR'],
+      featured: false,
+      locked: false,
+      order: 9,
+      active: true,
+    },
+    {
+      seedId: 'PT-CIT-0010',
+      commonName: 'Limão Galego dos Açores',
+      scientific: 'Citrus aurantifolia',
+      type: 'Fruit',
+      region: 'Azores (São Miguel, Terceira, Faial)',
+      status: convertStatus('At Risk'),
+      era: 'Heritage',
+      rarity: 'Rare',
+      ageYears: 400,
+      story: 'Small, highly aromatic island lime-lemon.',
+      tasteProfile: { sweetness: 35, acidity: 80, complexity: 68 },
+      images: ['/src/assets/seeds/orange-poly.png'],
+      sources: ['Azores Govt', 'DGADR'],
+      featured: true,
+      locked: false,
+      order: 10,
+      active: true,
+    },
+    {
+      seedId: 'PT-MEL-0011',
+      commonName: 'Meloa de Santa Maria (PGI)',
+      scientific: 'Cucumis melo',
+      type: 'Fruit',
+      region: 'Azores (Santa Maria)',
+      status: convertStatus('Heritage'),
+      era: 'Heritage',
+      rarity: 'Rare',
+      ageYears: 200,
+      story: 'Protected island melon with floral sweetness.',
+      tasteProfile: { sweetness: 78, acidity: 28, complexity: 55 },
+      images: ['/src/assets/seeds/peach-poly.png'],
+      sources: ['DGADR'],
+      featured: true,
+      locked: false,
+      order: 11,
+      active: true,
+    },
+    {
+      seedId: 'PT-BAN-0012',
+      commonName: 'Banana da Madeira',
+      scientific: 'Musa spp.',
+      type: 'Fruit',
+      region: 'Madeira',
+      status: convertStatus('Heritage'),
+      era: 'Heritage',
+      rarity: 'Common',
+      ageYears: 450,
+      story: 'Historic island bananas from terraced farms.',
+      tasteProfile: { sweetness: 75, acidity: 20, complexity: 58 },
+      images: ['/src/assets/seeds/peach-poly.png'],
+      sources: ['DGADR'],
+      featured: false,
+      locked: false,
+      order: 12,
+      active: true,
+    },
+    // Additional locked seeds
+    {
+      seedId: 'PT-ORG-0013',
+      commonName: 'Laranja de Amares',
+      scientific: 'Citrus sinensis \'Amares\'',
+      type: 'Fruit',
+      region: 'Minho (Mainland PT)',
+      status: convertStatus('At Risk'),
+      era: 'Heritage',
+      rarity: 'Rare',
+      ageYears: 180,
+      story: 'Historic orange from northern valleys — fading fast.',
+      tasteProfile: { sweetness: 68, acidity: 48, complexity: 60 },
+      images: ['/src/assets/seeds/orange-poly.png'],
+      sources: ['DGADR'],
+      featured: false,
+      locked: false,
+      order: 13,
+      active: true,
+    },
+    {
+      seedId: 'PT-PCH-0013B',
+      commonName: 'Pêssego da Cova da Beira',
+      scientific: 'Prunus persica \'Cova da Beira\'',
+      type: 'Fruit',
+      region: 'Beira Baixa (Mainland PT)',
+      status: convertStatus('Lost'),
+      era: 'Heritage',
+      rarity: 'Legendary',
+      ageYears: 150,
+      story: 'No longer grown — records only.',
+      tasteProfile: { sweetness: 75, acidity: 42, complexity: 65 },
+      images: ['/src/assets/seeds/peach-poly.png'],
+      sources: ['Historical archives'],
+      featured: false,
+      locked: true,
+      order: 14,
+      active: true,
+    },
+  ];
+
+  let seedCardsCreated = 0;
+  for (const seedCard of seedCardsData) {
+    try {
+      await prisma.seedCard.create({
+        data: seedCard as any,
+      });
+      seedCardsCreated++;
+    } catch (error: any) {
+      // Skip if seed already exists
+      if (error.code !== 'P2002') {
+        console.error(`Error creating seed card ${seedCard.seedId}:`, error.message);
+      }
+    }
+  }
+
+  console.log(`✅ Created ${seedCardsCreated} seed cards\n`);
+
   // ========== SUMMARY ==========
   console.log('\n' + '='.repeat(70));
   console.log('🎉 COMPREHENSIVE SEED COMPLETED SUCCESSFULLY!');
@@ -590,6 +887,11 @@ async function main() {
   console.log(`   - Seed Cards: 4 items`);
   console.log(`   - Final CTA: 4 items`);
   console.log(`   - Footer: 2 items\n`);
+
+  console.log('🌱 SEED CARDS: ' + seedCardsCreated + ' seed cards created');
+  console.log(`   - Featured seeds: ${seedCardsData.filter(s => s.featured).length}`);
+  console.log(`   - Unlocked seeds: ${seedCardsData.filter(s => !s.locked).length}`);
+  console.log(`   - Locked seeds: ${seedCardsData.filter(s => s.locked).length}\n`);
 
   console.log('💡 QUICK START:\n');
   console.log('   Dashboard Login:');

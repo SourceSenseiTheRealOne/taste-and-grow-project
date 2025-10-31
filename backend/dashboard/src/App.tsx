@@ -9,6 +9,7 @@ import { Layout } from "./components/Layout";
 import Analytics from "./pages/Analytics";
 import WebsiteContent from "./pages/WebsiteContent";
 import MissionRoles from "./pages/MissionRoles";
+import SeedCards from "./pages/SeedCards";
 import Corridors from "./pages/Corridors";
 import Cards from "./pages/Cards";
 import Users from "./pages/Users";
@@ -40,6 +41,7 @@ const App = () => (
               <Route index element={<Analytics />} />
               <Route path="website-content" element={<WebsiteContent />} />
               <Route path="mission-roles" element={<MissionRoles />} />
+              <Route path="seed-cards" element={<SeedCards />} />
               <Route path="users" element={<Users />} />
               <Route path="schools" element={<Schools />} />
               <Route path="school-codes" element={<SchoolCodes />} />
